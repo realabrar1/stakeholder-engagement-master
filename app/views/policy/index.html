@@ -1,0 +1,168 @@
+
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  {{ serviceName }}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+        text: "Back",
+        href: "javascript:history.back(1);"
+    }) }}
+{% endblock %}
+
+{% block pageScripts %}
+<script src="/public/javascripts/library/accessible-autocomplete.min.js"></script>
+<script>
+    var MHCLG = window.MHCLG || {};
+    MHCLG.pageParams = {{ pageParams | safe }};
+</script>
+<script src="/public/javascripts/mhclg.search.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        <span class="govuk-caption-l">Policy</span>
+        {{ page.title }}
+      </h1>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <form action="#" method="get" class="form govuk-!-padding-3 govuk-!-margin-bottom-9" id="filter-search-results">
+            {% call govukFieldset({
+                }) %}
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-third">
+                        {{ govukSelect({
+                            id: "policy-filter-stakeholder",
+                            name: "policy-filter-stakeholder",
+                            classes: "govuk-!-width-full",
+                            label: {
+                                text: "Stakeholder"
+                            },
+                            items: stakeholderOptions
+                            }) }}
+                    </div>
+                       
+                        <div class="govuk-grid-column-one-third">
+                            {{ govukSelect({
+                                id: "policy-filter-organisation",
+                                name: "policy-filter-organisation",
+                                classes: "govuk-!-width-full",
+                                label: {
+                                    text: "Organisation"
+                                },
+                                items: organisationOptions
+                                }) }}
+                        </div>
+                         <div class="govuk-grid-column-one-third">
+                            {{ govukSelect({
+                                id: "policy-filter-staff",
+                                name: "policy-filter-staff",
+                                classes: "govuk-!-width-full",
+                                label: {
+                                    text: "Organisation"
+                                },
+                                items: staffOptions
+                                }) }}
+                    </div>
+                        
+                </div>
+                 <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-one-third">
+                             {{ govukSelect({
+                                id: "policy-filter-policy",
+                                name: "policy-filter-policy",
+                                classes: "govuk-!-width-full",
+                                label: {
+                                    text: "Policy area"
+                                },
+                                items: policyOptions
+                                }) }}
+                        </div>
+                        <div class="govuk-grid-column-one-third">
+                             {{ govukSelect({
+                                id: "policy-filter-region",
+                                name: "policy-filter-region",
+                                classes: "govuk-!-width-full",
+                                label: {
+                                    text: "Region"
+                                },
+                                items: regionOptions
+                                }) }}
+                        </div>
+                    <div class="govuk-grid-column-one-third">
+                        {{ govukInput({
+                            label: {
+                                text: "Date range"
+                            },
+                            classes: "govuk-input--width-10",
+                            id: "policy-filter-date",
+                            name: "policy-filter-date"
+                        }) }}
+                    </div>
+                         
+                    </div>
+            {% endcall %}
+
+            {{ govukButton({
+                text: "Filter",
+                classes: "govuk-button"
+            }) }}
+        </form>
+    </div>
+  </div>
+ <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="table-overview">
+            <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-heading-m">Engagement history</caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Contact details</th>
+                    <th class="govuk-table__header" scope="col">Stakeholder</th>
+                    <th class="govuk-table__header govuk-!-width-one-half" scope="col">Summary</th>
+                    <th class="govuk-table__header" scope="col">Themes</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    {% for entry in entries %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell govuk-body-s" scope="row">
+                                <dl class="mhclg-summary-list">
+                                    <dt>Date contacted</dt>
+                                    <dd>{{ entry.date }}</dd>
+                                    <dt>Contacted by</dt>
+                                    <dd><a href="#"> {{ entry.staff }}</a></dd>
+                                </dl>
+                            </td>
+                            <td class="govuk-table__cell govuk-body-s">
+                                <dl class='mhclg-summary-list'>
+                                    <dt>Name</dt>
+                                    <dd><a href='/stakeholder/{{entry.stakeholder.uid}}'>{{ entry.stakeholder.name }}</a></dd>
+                                    <dt>Role</dt>
+                                    <dd>{{ entry.stakeholder.role }}</dd>
+                                    <dt>Organisation</dt>
+                                    <dd><a href='#'>{{ entry.stakeholder.organisation }}</a></dd>
+                                </dl>
+                            </td>
+                            <td class="govuk-table__cell govuk-body-s">{{ entry.summary | escape  | nl2br }}</td>
+                            <td class="govuk-table__cell govuk-body-s">
+                                <ul class='govuk-list govuk-body-s govuk-list--bullet'>
+                                    <li><a href='#'>Hate crime</a></li>
+                                    <li><a href='#'>Poverty</a></li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 
+{% endblock %}
